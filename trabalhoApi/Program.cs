@@ -3,12 +3,13 @@ using TrabalhoApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var conn = "Server=127.0.0.1;Port=3307;Database=trabalho;User=root;Password="; //Essa parte foi colocada para funcionar o xampp que estava dando muito erro.
-Console.WriteLine(conn);
+// Pega a conexão do appsettings.json
+var conn = builder.Configuration.GetConnectionString("ConnPadrao");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(conn, new MySqlServerVersion(new Version(8, 0, 36))));
+    options.UseMySql(conn, ServerVersion.AutoDetect(conn))); // AutoDetect facilita a vida no XAMPP
 
+// Configuração do CORS (Obrigatório pelo professor)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Liberado", policy =>
@@ -25,13 +26,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Swagger só aparece em desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("Liberado");
 app.UseAuthorization();
 app.MapControllers();

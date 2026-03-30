@@ -17,24 +17,24 @@ public class ProdutosController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Produto>>> GetAllAsync()
     {
-        var produtos = await _context.Produtos.AsNoTracking().ToListAsync();
-        return Ok(produtos);
+        return Ok(await _context.Produtos.AsNoTracking().ToListAsync());
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Produto?>> GetByIdAsync(int id)
-    {
-        return await _context.Produtos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-    }
+    [HttpGet("{id:int}", Name = "GetProduto")] // Adicionamos o Name aqui
+public async Task<ActionResult<Produto?>> GetByIdAsync(int id)
+{
+    return await _context.Produtos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+}
 
-    [HttpPost]
-    public async Task<ActionResult<Produto>> CreateAsync(Produto produto)
-    {
-        _context.Produtos.Add(produto);
-        await _context.SaveChangesAsync();
+[HttpPost]
+public async Task<ActionResult<Produto>> CreateAsync(Produto produto)
+{
+    produto.Id = 0;
+    _context.Produtos.Add(produto);
+    await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = produto.Id }, produto);
-    }
+    return CreatedAtRoute("GetProduto", new { id = produto.Id }, produto);
+}
 
     [HttpPut]
     public async Task<IActionResult> UpdateAsync(Produto produto)
@@ -42,7 +42,7 @@ public class ProdutosController : ControllerBase
         _context.Produtos.Update(produto);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return NoContent(); // Retorno 204 [cite: 21]
     }
 
     [HttpDelete("{id:int}")]

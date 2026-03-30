@@ -17,32 +17,31 @@ public class ClientesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Cliente>>> GetAllAsync()
     {
-        var clientes = await _context.Clientes.AsNoTracking().ToListAsync();
-        return Ok(clientes);
+        return Ok(await _context.Clientes.AsNoTracking().ToListAsync());
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Cliente?>> GetByIdAsync(int id)
-    {
-        return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
-    }
+    [HttpGet("{id:int}", Name = "GetCliente")] // Adicionamos o Name aqui
+public async Task<ActionResult<Cliente?>> GetByIdAsync(int id)
+{
+    return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+}
 
-    [HttpPost]
-    public async Task<ActionResult<Cliente>> CreateAsync(Cliente cliente)
-    {
-        _context.Clientes.Add(cliente);
-        await _context.SaveChangesAsync();
+[HttpPost]
+public async Task<ActionResult<Cliente>> CreateAsync(Cliente cliente)
+{
+    cliente.Id = 0;
+    _context.Clientes.Add(cliente);
+    await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = cliente.Id }, cliente);
-    }
-
+    return CreatedAtRoute("GetCliente", new { id = cliente.Id }, cliente);
+}
     [HttpPut]
     public async Task<IActionResult> UpdateAsync(Cliente cliente)
     {
         _context.Clientes.Update(cliente);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return NoContent(); // Retorno 204 [cite: 31]
     }
 
     [HttpDelete("{id:int}")]

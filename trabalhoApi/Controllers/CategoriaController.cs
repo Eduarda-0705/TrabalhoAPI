@@ -17,24 +17,25 @@ public class CategoriasController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Categoria>>> GetAllAsync()
     {
-        var categorias = await _context.Categorias.AsNoTracking().ToListAsync();
-        return Ok(categorias);
+        return Ok(await _context.Categorias.AsNoTracking().ToListAsync());
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Categoria?>> GetByIdAsync(int id)
-    {
-        return await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
-    }
+   [HttpGet("{id:int}", Name = "GetCategoria")] // Adicionamos o Name aqui
+public async Task<ActionResult<Categoria?>> GetByIdAsync(int id)
+{
+    return await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+}
 
-    [HttpPost]
-    public async Task<ActionResult<Categoria>> CreateAsync(Categoria categoria)
-    {
-        _context.Categorias.Add(categoria);
-        await _context.SaveChangesAsync();
+[HttpPost]
+public async Task<ActionResult<Categoria>> CreateAsync(Categoria categoria)
+{
+    categoria.Id = 0;
+    _context.Categorias.Add(categoria);
+    await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = categoria.Id }, categoria);
-    }
+    // Mudamos para CreatedAtRoute usando o nome que demos acima
+    return CreatedAtRoute("GetCategoria", new { id = categoria.Id }, categoria);
+}
 
     [HttpPut]
     public async Task<IActionResult> UpdateAsync(Categoria categoria)
@@ -42,7 +43,7 @@ public class CategoriasController : ControllerBase
         _context.Categorias.Update(categoria);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return NoContent(); // Retorno 204 [cite: 21, 26]
     }
 
     [HttpDelete("{id:int}")]

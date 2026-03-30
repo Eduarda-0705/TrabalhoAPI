@@ -14,16 +14,22 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var produto = modelBuilder.Entity<Produto>();
-        produto.Property(p => p.Nome).HasMaxLength(120).IsRequired();
-        produto.Property(p => p.Preco).HasPrecision(18, 2).IsRequired();
+        // Configuração de Produto
+        modelBuilder.Entity<Produto>().HasKey(p => p.Id);
+        modelBuilder.Entity<Produto>().Property(p => p.Id).ValueGeneratedOnAdd(); // AUTO INCREMENT
+        modelBuilder.Entity<Produto>().Property(p => p.Nome).HasMaxLength(120).IsRequired();
+        modelBuilder.Entity<Produto>().Property(p => p.Preco).HasPrecision(18, 2).IsRequired();
 
-        var categoria = modelBuilder.Entity<Categoria>();
-        categoria.Property(c => c.Nome).HasMaxLength(80).IsRequired();
-        categoria.Property(c => c.Descricao).HasMaxLength(200);
+        // Configuração de Categoria
+        modelBuilder.Entity<Categoria>().HasKey(c => c.Id);
+        modelBuilder.Entity<Categoria>().Property(c => c.Id).ValueGeneratedOnAdd(); // AUTO INCREMENT
+        modelBuilder.Entity<Categoria>().Property(c => c.Nome).HasMaxLength(80).IsRequired();
+        modelBuilder.Entity<Categoria>().Property(c => c.Descricao).HasMaxLength(200);
 
-        var cliente = modelBuilder.Entity<Cliente>();
-        cliente.Property(c => c.Nome).HasMaxLength(100).IsRequired();
-        cliente.Property(c => c.Email).IsRequired();
+        // Configuração de Cliente
+        modelBuilder.Entity<Cliente>().HasKey(c => c.Id);
+        modelBuilder.Entity<Cliente>().Property(c => c.Id).ValueGeneratedOnAdd(); // AUTO INCREMENT
+        modelBuilder.Entity<Cliente>().Property(c => c.Nome).HasMaxLength(100).IsRequired();
+        modelBuilder.Entity<Cliente>().Property(c => c.Email).IsRequired();
     }
 }
