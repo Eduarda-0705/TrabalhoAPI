@@ -3,7 +3,8 @@ using TrabalhoApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var conn = builder.Configuration.GetConnectionString("ConnPadrao");
+var conn = "Server=127.0.0.1;Port=3307;Database=trabalho;User=root;Password="; //Essa parte foi colocada para funcionar o xampp que estava dando muito erro.
+Console.WriteLine(conn);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(conn, new MySqlServerVersion(new Version(8, 0, 36))));
