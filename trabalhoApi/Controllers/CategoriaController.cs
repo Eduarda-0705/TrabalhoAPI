@@ -43,7 +43,7 @@ public async Task<ActionResult<Categoria>> CreateAsync(Categoria categoria)
         _context.Categorias.Update(categoria);
         await _context.SaveChangesAsync();
 
-        return NoContent(); // Retorno 204 [cite: 21, 26]
+        return NoContent(); 
     }
 
     [HttpDelete("{id:int}")]

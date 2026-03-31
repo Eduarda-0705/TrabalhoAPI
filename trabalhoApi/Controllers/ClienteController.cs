@@ -20,7 +20,7 @@ public class ClientesController : ControllerBase
         return Ok(await _context.Clientes.AsNoTracking().ToListAsync());
     }
 
-    [HttpGet("{id:int}", Name = "GetCliente")] // Adicionamos o Name aqui
+    [HttpGet("{id:int}", Name = "GetCliente")] 
 public async Task<ActionResult<Cliente?>> GetByIdAsync(int id)
 {
     return await _context.Clientes.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
@@ -41,7 +41,7 @@ public async Task<ActionResult<Cliente>> CreateAsync(Cliente cliente)
         _context.Clientes.Update(cliente);
         await _context.SaveChangesAsync();
 
-        return NoContent(); // Retorno 204 [cite: 31]
+        return NoContent(); 
     }
 
     [HttpDelete("{id:int}")]
